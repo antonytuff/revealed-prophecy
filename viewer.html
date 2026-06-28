@@ -6,6 +6,10 @@
   <title>Slide Viewer — Revealed</title>
   <link rel="stylesheet" href="assets/style.css" />
   <style>
+    /* ── Override global #slide-view constraint ── */
+    #slide-view { max-width: none; padding: 0; margin: 0; }
+    #reader-view { max-width: 740px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
     /* ── BOOK SCENE ── */
     .book-scene {
       position: relative;
@@ -137,7 +141,6 @@
       0%,100%{ opacity: 0.35; }
       50%    { opacity: 0.85; }
     }
-
     .cover-emblem { text-align: left; }
     .emblem-cross {
       font-size: clamp(2.2rem,4vw,3.6rem);
@@ -166,7 +169,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.6rem 1.5rem;
+      padding: 0.6rem 1.8rem;
       background: #111;
       border-bottom: 1px solid #333;
     }
@@ -192,8 +195,8 @@
 
     .ms-iframe {
       width: 100%;
-      height: 75vh;
-      min-height: 500px;
+      height: 85vh;
+      min-height: 600px;
       border: none;
       display: block;
       background: #222;
@@ -225,6 +228,50 @@
     }
     .mode-btn:hover { border-color: var(--gold); color: var(--gold); }
     .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── READER VIEW ── */
+    .reader-ref {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+    .reader-chapter-heading {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .reader-chapter-heading:first-of-type { margin-top: 0; }
+    .reader-verse {
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      line-height: 1.9;
+      color: var(--text);
+      margin-bottom: 0.1rem;
+    }
+    sup.vnum {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      vertical-align: super;
+      margin-right: 0.15rem;
+      font-style: normal;
+    }
+    .reader-loading, .reader-error {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+    .reader-error { color: #c0392b; font-style: normal; }
 
     /* ── NOTES VIEW ── */
     .notes-view-inner {
@@ -331,12 +378,15 @@
     <button class="mode-btn active" id="btn-slides" onclick="setMode('slides')">
       &#9634;&nbsp; Slide View
     </button>
+    <button class="mode-btn" id="btn-reader" onclick="setMode('reader')">
+      &#9776;&nbsp; Reader View
+    </button>
     <button class="mode-btn" id="btn-notes" onclick="setMode('notes')">
       &#9998;&nbsp; Notes
     </button>
   </div>
 
-  <!-- SLIDE VIEW -->
+  <!-- ══ SLIDE VIEW ══ -->
   <div id="slide-view">
     <div class="book-scene">
 
@@ -374,7 +424,15 @@
     </div>
   </div><!-- /slide-view -->
 
-  <!-- NOTES VIEW -->
+  <!-- ══ READER VIEW ══ -->
+  <div id="reader-view" style="display:none">
+    <span class="reader-ref" id="reader-ref"></span>
+    <div id="reader-content">
+      <p class="reader-loading">Select Reader View to load the Bible text.</p>
+    </div>
+  </div>
+
+  <!-- ══ NOTES VIEW ══ -->
   <div id="notes-view" style="display:none">
     <div class="notes-view-inner">
       <div class="notes-heading-row">
@@ -400,14 +458,16 @@
   </footer>
 
   <script>
-    /* ── READ URL PARAMS ── */
-    const params   = new URLSearchParams(location.search);
-    const file     = params.get('file')     || '';
-    const title    = params.get('title')    || 'Slide Viewer';
-    const book     = params.get('book')     || 'Revealed';
-    const sub      = params.get('sub')      || '';
-    const backHref = params.get('back')     || 'index.html';
-    const backLabel= params.get('backLabel')|| book;
+    /* ── URL PARAMS ── */
+    const params    = new URLSearchParams(location.search);
+    const file      = params.get('file')      || '';
+    const title     = params.get('title')     || 'Slide Viewer';
+    const book      = params.get('book')      || 'Revealed';
+    const sub       = params.get('sub')       || '';
+    const backHref  = params.get('back')      || 'index.html';
+    const backLabel = params.get('backLabel') || book;
+    const bk        = params.get('bk')        || '';   /* e.g. "revelation" or "daniel" */
+    const ch        = params.get('ch')        || '';   /* e.g. "2" or "8,9" */
 
     /* ── POPULATE PAGE ── */
     document.title = title + ' — Revealed';
@@ -422,11 +482,16 @@
     document.getElementById('cover-sub').textContent     = sub;
     document.getElementById('notes-ref').textContent     = book + (sub ? ' · ' + sub : '');
 
+    const refLabel = bk && ch
+      ? ch.split(',').map(n => bk.charAt(0).toUpperCase() + bk.slice(1) + ' ' + n.trim()).join(' & ')
+      : (sub || title);
+    document.getElementById('reader-ref').textContent = refLabel;
+
     if (file) {
-      const rawBase  = 'https://raw.githubusercontent.com/antonytuff/revealed-prophecy/master/';
-      const fileUrl  = rawBase + file.split('/').map(encodeURIComponent).join('/');
+      const rawBase   = 'https://raw.githubusercontent.com/antonytuff/revealed-prophecy/master/';
+      const fileUrl   = rawBase + file.split('/').map(encodeURIComponent).join('/');
       const viewerSrc = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fileUrl);
-      document.getElementById('ms-viewer').src   = viewerSrc;
+      document.getElementById('ms-viewer').src    = viewerSrc;
       document.getElementById('download-link').href = file;
     }
 
@@ -445,13 +510,46 @@
     window.addEventListener('load', () => setTimeout(openBook, 650));
 
     /* ── MODE SWITCHING ── */
+    let readerLoaded = false;
+
     function setMode(mode) {
-      const isSlides = mode === 'slides';
-      document.getElementById('slide-view').style.display  = isSlides ? '' : 'none';
-      document.getElementById('notes-view').style.display  = isSlides ? 'none' : '';
-      document.getElementById('btn-slides').classList.toggle('active', isSlides);
-      document.getElementById('btn-notes').classList.toggle('active', !isSlides);
-      if (isSlides) { resetBook(); setTimeout(openBook, 360); }
+      ['slides','reader','notes'].forEach(m => {
+        document.getElementById(m + '-view').style.display = m === mode ? '' : 'none';
+        document.getElementById('btn-' + m).classList.toggle('active', m === mode);
+      });
+      if (mode === 'slides') { resetBook(); setTimeout(openBook, 360); }
+      if (mode === 'reader' && !readerLoaded) { readerLoaded = true; loadReader(); }
+    }
+
+    /* ── BIBLE TEXT READER ── */
+    async function loadReader() {
+      const container = document.getElementById('reader-content');
+      if (!bk || !ch) {
+        container.innerHTML = '<p class="reader-loading">No Bible reference is linked to this study part.</p>';
+        return;
+      }
+      container.innerHTML = '<p class="reader-loading">Loading Bible text&hellip;</p>';
+      try {
+        const chapters = ch.split(',').map(n => n.trim());
+        const results  = await Promise.all(
+          chapters.map(n =>
+            fetch('https://bible-api.com/' + bk + '+' + n + '?translation=kjv').then(r => r.json())
+          )
+        );
+        let html = '';
+        for (const data of results) {
+          if (!data.verses) throw new Error('No verses returned');
+          html += '<h3 class="reader-chapter-heading">' + data.reference + '</h3>';
+          html += '<div class="reader-verses">';
+          for (const v of data.verses) {
+            html += '<span class="reader-verse"><sup class="vnum">' + v.verse + '</sup>' + v.text.trim().replace(/\n/g,' ') + ' </span>';
+          }
+          html += '</div>';
+        }
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = '<p class="reader-error">Could not load Bible text. Please check your internet connection and try again.</p>';
+      }
     }
 
     /* ── FULLSCREEN ── */
@@ -498,9 +596,7 @@
     }
     function clearNotes() {
       if (!notesArea.value.trim() || !confirm('Clear notes for ' + title + '?')) return;
-      notesArea.value = '';
-      localStorage.removeItem(NOTES_KEY);
-      updateWordCount();
+      notesArea.value = ''; localStorage.removeItem(NOTES_KEY); updateWordCount();
     }
     function copyNotes() {
       if (!notesArea.value.trim()) return;

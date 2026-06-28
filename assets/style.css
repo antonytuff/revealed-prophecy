@@ -637,6 +637,27 @@ footer a { color: var(--gold); text-decoration: none; }
   vertical-align: middle;
 }
 
+/* ── READER VERSES (dynamic Bible text in viewer.html) ── */
+.reader-verses {
+  margin-bottom: 2.5rem;
+  line-height: 1.95;
+}
+
+.reader-verse {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  color: var(--text);
+}
+
+sup.vnum {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--gold);
+  vertical-align: super;
+  margin-right: 0.12rem;
+  letter-spacing: 0.04em;
+}
+
 /* Back breadcrumb in chapter/viewer header */
 .back-crumb {
   display: inline-flex;
