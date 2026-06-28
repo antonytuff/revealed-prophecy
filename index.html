@@ -446,6 +446,7 @@
         saveVids();
       }
       renderList();
+      if (vidList.length > 0) previewVideo(0);
     })();
 
     function saveVids() { localStorage.setItem(VID_KEY, JSON.stringify(vidList)); }
@@ -475,6 +476,22 @@
       `).join('');
     }
 
+    /* Show first video on load — no autoplay, lets user click play */
+    function previewVideo(idx) {
+      currentIdx = idx;
+      const v      = vidList[idx];
+      const iframe = document.getElementById('yt-iframe');
+      const ph     = document.getElementById('yt-placeholder');
+      const np     = document.getElementById('yt-now-playing');
+      const start  = v.start ? '&start=' + v.start : '';
+      iframe.src   = 'https://www.youtube.com/embed/' + v.id + '?rel=0' + start;
+      ph.style.display = 'none';
+      np.style.display = 'flex';
+      document.getElementById('yt-now-title').textContent = v.title;
+      renderList();
+    }
+
+    /* User clicked a playlist item — autoplay */
     function playVideo(idx) {
       currentIdx = idx;
       const v      = vidList[idx];
