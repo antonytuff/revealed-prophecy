@@ -415,73 +415,229 @@ footer {
 
 footer a { color: var(--gold); text-decoration: none; }
 
-/* ── CHAPTER LIST PAGE ── */
-.chapter-list-section {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 3rem 2rem 5rem;
+/* ══════════════════════════════════════════
+   BOOK HERO  (dark leather — chapter list pages)
+══════════════════════════════════════════ */
+.book-hero {
+  background:
+    radial-gradient(ellipse at 30% 60%, #5c3520 0%, transparent 55%),
+    linear-gradient(150deg, #1e1008 0%, #3a2210 45%, #241608 100%);
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(184,134,11,0.3);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Gold filigree inset frame */
+.book-hero::before {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border: 1px solid rgba(184,134,11,0.1);
+  pointer-events: none;
+}
+
+.book-hero .hero-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(212,160,23,0.6);
+  margin-bottom: 1rem;
+}
+
+.book-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  color: #f2e4cc;
+  margin-bottom: 1.1rem;
+  line-height: 1.15;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+.book-hero p {
+  color: rgba(242,228,204,0.58);
+  max-width: 520px;
+  margin: 0 auto 2rem;
+  font-size: 0.97rem;
+  line-height: 1.75;
+}
+
+.book-hero-rule {
+  width: 48px;
+  height: 1px;
+  background: rgba(212,160,23,0.4);
+  margin: 0 auto 2rem;
+}
+
+/* Stats pill row */
+.book-hero-stats {
+  display: inline-flex;
+  border: 1px solid rgba(184,134,11,0.22);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.2);
+}
+
+.book-stat {
+  padding: 0.65rem 1.5rem;
+  text-align: center;
+  border-right: 1px solid rgba(184,134,11,0.18);
+}
+.book-stat:last-child { border-right: none; }
+
+.stat-num {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--gold-light);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(212,160,23,0.42);
+  display: block;
+}
+
+/* ══════════════════════════════════════════
+   CHAPTER LIST SECTION
+══════════════════════════════════════════ */
+.chapter-list-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem 5rem;
+}
+
+/* Section heading with trailing gold rule */
+.chapter-section-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin-bottom: 1.5rem;
+}
+.chapter-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(184,134,11,0.45), transparent);
+}
+
+/* Spacing between chapter groups (Daniel page) */
+.chapter-group + .chapter-group { margin-top: 3rem; }
+
+/* ── CHAPTER GRID ── */
 .chapter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 1rem;
 }
 
+/* ── CHAPTER CARD ── */
 .chapter-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.2rem 1.4rem 1rem;
+  border-left: 3px solid rgba(184,134,11,0.3);
+  border-radius: 0 8px 8px 0;
+  padding: 1.5rem 1.4rem 1.15rem;
   text-decoration: none;
   color: inherit;
-  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
-  gap: 0.35rem;
+  overflow: hidden;
+  transition: box-shadow 0.25s, transform 0.25s, border-left-color 0.25s, background 0.25s;
+}
+
+/* Faded chapter number watermark */
+.chapter-card::after {
+  content: attr(data-num);
+  position: absolute;
+  bottom: -0.6rem;
+  right: 0.5rem;
+  font-family: var(--serif);
+  font-size: 5.5rem;
+  font-weight: 700;
+  color: rgba(229,224,216,0.9);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  transition: color 0.3s;
 }
 
 .chapter-card:hover {
-  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
-  transform: translateY(-2px);
-  border-color: var(--gold-light);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  border-left-color: var(--gold);
+  background: var(--bg);
+}
+
+.chapter-card:hover::after { color: rgba(184,134,11,0.08); }
+
+/* Featured card — Chapter 1 has Slides + Reader */
+.chapter-card.featured {
+  border-left-color: var(--gold);
+  background: linear-gradient(135deg, #fdfcf8 0%, #fffdf4 100%);
 }
 
 .chapter-label {
-  font-size: 0.68rem;
-  letter-spacing: 0.15em;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
   font-weight: 600;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.3rem;
 }
 
 .chapter-card h3 {
   font-family: var(--serif);
-  font-size: 0.92rem;
+  font-size: 0.97rem;
   color: var(--accent);
-  line-height: 1.35;
+  line-height: 1.4;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
-.chapter-arrow {
-  font-size: 0.75rem;
+.chapter-type {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  margin-top: 0.5rem;
+  margin-top: 0.9rem;
+  position: relative;
+  z-index: 1;
   transition: color 0.2s;
 }
+.chapter-card:hover .chapter-type { color: var(--gold); }
 
-.chapter-card:hover .chapter-arrow { color: var(--gold); }
-
-.chapter-divider {
-  font-family: var(--serif);
-  font-size: 1rem;
-  color: var(--accent);
-  margin: 2.5rem 0 1.2rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--border);
+/* Small badge shown on the featured card */
+.chapter-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.5rem;
+  background: rgba(184,134,11,0.1);
+  border: 1px solid rgba(184,134,11,0.28);
+  border-radius: 20px;
+  color: var(--gold);
+  margin-left: 0.3rem;
+  vertical-align: middle;
 }
 
-/* Back breadcrumb in chapter header */
+/* Back breadcrumb in chapter/viewer header */
 .back-crumb {
   display: inline-flex;
   align-items: center;
