@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide Viewer — Revealed</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    /* ── BOOK SCENE ── */
+    .book-scene {
+      position: relative;
+      perspective: 3200px;
+      perspective-origin: 50% 38%;
+    }
+
+    /* ── BOOK COVER ── */
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .book-cover.is-open  { pointer-events: none; }
+    .book-cover.no-anim .cover-half { transition: none !important; }
+
+    .cover-half {
+      flex: 1;
+      position: relative;
+      will-change: transform;
+      backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .cover-left {
+      transform-origin: right center;
+      transition: transform 1.4s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+      background:
+        radial-gradient(ellipse at 30% 40%, #6b3f22 0%, transparent 60%),
+        linear-gradient(160deg, #3d2412 0%, #5e3820 35%, #4c2d1a 65%, #301808 100%);
+      border-right: 4px solid #150b04;
+      box-shadow: inset -16px 0 40px rgba(0,0,0,0.65), inset 0 0 80px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 2.5rem 3.5rem 2.5rem 2rem;
+    }
+
+    .cover-right {
+      transform-origin: left center;
+      transition: transform 1.4s cubic-bezier(0.645, 0.045, 0.355, 1.000) 0.07s;
+      background:
+        radial-gradient(ellipse at 70% 60%, #6b3f22 0%, transparent 60%),
+        linear-gradient(200deg, #301808 0%, #4c2d1a 40%, #5e3820 72%, #3d2412 100%);
+      border-left: 4px solid #150b04;
+      box-shadow: inset 16px 0 40px rgba(0,0,0,0.65), inset 0 0 80px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2.5rem 2rem 2.5rem 3.5rem;
+    }
+
+    .book-cover.is-open .cover-left  { transform: rotateY(-180deg); }
+    .book-cover.is-open .cover-right { transform: rotateY(180deg); }
+
+    .cover-half::before {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(184,134,11,0.38);
+      pointer-events: none;
+    }
+    .cover-half::after {
+      content: '';
+      position: absolute;
+      inset: 26px;
+      border: 1px solid rgba(184,134,11,0.16);
+      pointer-events: none;
+    }
+
+    .cover-shimmer {
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%);
+      animation: shimmer-sweep 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmer-sweep {
+      0%  { left: -80%; }
+      50% { left: 140%; }
+      100%{ left: 140%; }
+    }
+
+    .cover-text { text-align: right; }
+    .cover-eyebrow {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(212,160,23,0.55);
+      margin-bottom: 0.7rem;
+    }
+    .cover-title {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      color: #d4a017;
+      line-height: 1.15;
+      margin-bottom: 0.35rem;
+      text-shadow: 0 3px 16px rgba(0,0,0,0.7);
+    }
+    .cover-sub {
+      font-family: var(--serif);
+      font-size: 0.8rem;
+      color: rgba(212,160,23,0.7);
+      letter-spacing: 0.08em;
+      margin-bottom: 1.1rem;
+    }
+    .cover-rule {
+      width: 44px;
+      height: 1px;
+      background: linear-gradient(to left, rgba(212,160,23,0.5), transparent);
+      margin-left: auto;
+      margin-bottom: 1.2rem;
+    }
+    .cover-cta {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(212,160,23,0.5);
+      animation: pulse-cta 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse-cta {
+      0%,100%{ opacity: 0.35; }
+      50%    { opacity: 0.85; }
+    }
+
+    .cover-emblem { text-align: left; }
+    .emblem-cross {
+      font-size: clamp(2.2rem,4vw,3.6rem);
+      color: rgba(212,160,23,0.25);
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+    .emblem-stars {
+      font-size: 0.9rem;
+      color: rgba(212,160,23,0.18);
+      letter-spacing: 0.4em;
+    }
+    .emblem-label {
+      font-family: var(--serif);
+      font-size: 0.65rem;
+      color: rgba(212,160,23,0.28);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+
+    /* ── VIEWER SHELL ── */
+    .viewer-wrap { background: #1a1a1a; position: relative; }
+
+    .viewer-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.5rem;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+    .viewer-toolbar .title { font-size: 0.85rem; color: #aaa; letter-spacing: 0.05em; }
+    .viewer-toolbar .toolbar-actions { display: flex; gap: 0.5rem; }
+    .viewer-toolbar button,
+    .viewer-toolbar a {
+      background: #222;
+      border: 1px solid #444;
+      color: #ccc;
+      padding: 0.35rem 0.9rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .viewer-toolbar button:hover,
+    .viewer-toolbar a:hover { background: #333; color: #fff; }
+
+    .ms-iframe {
+      width: 100%;
+      height: 75vh;
+      min-height: 500px;
+      border: none;
+      display: block;
+      background: #222;
+    }
+    .viewer-fullscreen .ms-iframe { height: 100vh; }
+
+    /* ── MODE BAR ── */
+    .mode-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1.2rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── NOTES VIEW ── */
+    .notes-view-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+    .notes-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .notes-heading-row h2 { font-family: var(--serif); font-size: 1.4rem; color: var(--accent); }
+    .notes-heading-row .notes-ref {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .notes-hint {
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+    .notes-area {
+      width: 100%;
+      min-height: 300px;
+      padding: 1.4rem 1.6rem;
+      font-family: var(--serif);
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--text);
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+    .notes-area:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184,134,11,0.13);
+      background: var(--bg);
+    }
+    .notes-area::placeholder { color: #c8c1b5; font-style: italic; }
+    .notes-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .notes-word-count { font-size: 0.78rem; color: var(--text-muted); }
+    .notes-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .notes-saved-tag {
+      font-size: 0.75rem;
+      color: #2d6a2d;
+      opacity: 0;
+      transition: opacity 0.35s;
+      margin-right: 0.25rem;
+    }
+    .notes-saved-tag.show { opacity: 1; }
+    .notes-btn {
+      font-size: 0.8rem;
+      padding: 0.32rem 0.9rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .notes-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .notes-btn.danger:hover { border-color: #c0392b; color: #c0392b; background: #fef0ef; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="index.html">Re<span>veal</span>ed</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="revelation.html">Revelation</a></li>
+      <li><a href="daniel.html">Daniel</a></li>
+    </ul>
+  </nav>
+
+  <header class="chapter-header" id="chapter-header">
+    <a class="back-crumb" id="back-link" href="index.html">&#8592; Back</a>
+    <p class="eyebrow" id="book-eyebrow"></p>
+    <h1 id="chapter-title">Loading&hellip;</h1>
+    <p class="subtitle" id="chapter-sub"></p>
+  </header>
+
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-slides" onclick="setMode('slides')">
+      &#9634;&nbsp; Slide View
+    </button>
+    <button class="mode-btn" id="btn-notes" onclick="setMode('notes')">
+      &#9998;&nbsp; Notes
+    </button>
+  </div>
+
+  <!-- SLIDE VIEW -->
+  <div id="slide-view">
+    <div class="book-scene">
+
+      <div class="book-cover" id="book-cover" onclick="openBook()">
+        <div class="cover-half cover-left">
+          <div class="cover-shimmer"></div>
+          <div class="cover-text">
+            <p class="cover-eyebrow" id="cover-eyebrow"></p>
+            <h2 class="cover-title" id="cover-title"></h2>
+            <p class="cover-sub" id="cover-sub"></p>
+            <div class="cover-rule"></div>
+            <span class="cover-cta">Click to open</span>
+          </div>
+        </div>
+        <div class="cover-half cover-right">
+          <div class="cover-emblem">
+            <div class="emblem-cross">&#10013;</div>
+            <div class="emblem-stars">&#10022; &#10022; &#10022;</div>
+            <div class="emblem-label">Revealed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="viewer-wrap" id="viewer-wrap">
+        <div class="viewer-toolbar">
+          <span class="title" id="toolbar-title"></span>
+          <div class="toolbar-actions">
+            <button onclick="toggleFullscreen()" title="Fullscreen">&#x26F6;&nbsp; Fullscreen</button>
+            <a id="download-link" href="#" download title="Download slides">&#8659;&nbsp; Download</a>
+          </div>
+        </div>
+        <iframe id="ms-viewer" class="ms-iframe" allowfullscreen title="Slide Viewer"></iframe>
+      </div>
+
+    </div>
+  </div><!-- /slide-view -->
+
+  <!-- NOTES VIEW -->
+  <div id="notes-view" style="display:none">
+    <div class="notes-view-inner">
+      <div class="notes-heading-row">
+        <h2>Study Notes</h2>
+        <span class="notes-ref" id="notes-ref"></span>
+      </div>
+      <p class="notes-hint">Capture insights, questions, or reflections as you study. Notes are saved automatically in your browser.</p>
+      <textarea id="notes-area" class="notes-area" rows="16"
+        placeholder="Begin writing your notes here…"></textarea>
+      <div class="notes-footer-row">
+        <span class="notes-word-count" id="notes-word-count">0 words</span>
+        <div class="notes-actions">
+          <span class="notes-saved-tag" id="notes-saved-tag">Saved</span>
+          <button class="notes-btn" onclick="copyNotes()">Copy</button>
+          <button class="notes-btn danger" onclick="clearNotes()">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Revealed &mdash; Prophetic Bible Studies &nbsp;|&nbsp; <a href="index.html">Home</a></p>
+  </footer>
+
+  <script>
+    /* ── READ URL PARAMS ── */
+    const params   = new URLSearchParams(location.search);
+    const file     = params.get('file')     || '';
+    const title    = params.get('title')    || 'Slide Viewer';
+    const book     = params.get('book')     || 'Revealed';
+    const sub      = params.get('sub')      || '';
+    const backHref = params.get('back')     || 'index.html';
+    const backLabel= params.get('backLabel')|| book;
+
+    /* ── POPULATE PAGE ── */
+    document.title = title + ' — Revealed';
+    document.getElementById('book-eyebrow').textContent  = book;
+    document.getElementById('chapter-title').textContent = title;
+    document.getElementById('chapter-sub').textContent   = sub;
+    document.getElementById('back-link').href            = backHref;
+    document.getElementById('back-link').textContent     = '← ' + backLabel;
+    document.getElementById('toolbar-title').textContent = title;
+    document.getElementById('cover-eyebrow').textContent = book;
+    document.getElementById('cover-title').textContent   = title;
+    document.getElementById('cover-sub').textContent     = sub;
+    document.getElementById('notes-ref').textContent     = book + (sub ? ' · ' + sub : '');
+
+    if (file) {
+      const rawBase  = 'https://raw.githubusercontent.com/antonytuff/revealed-prophecy/master/';
+      const fileUrl  = rawBase + file.split('/').map(encodeURIComponent).join('/');
+      const viewerSrc = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(fileUrl);
+      document.getElementById('ms-viewer').src   = viewerSrc;
+      document.getElementById('download-link').href = file;
+    }
+
+    /* ── BOOK ANIMATION ── */
+    function openBook() {
+      const c = document.getElementById('book-cover');
+      if (!c.classList.contains('is-open')) c.classList.add('is-open');
+    }
+    function resetBook() {
+      const c = document.getElementById('book-cover');
+      c.classList.add('no-anim');
+      c.classList.remove('is-open');
+      c.offsetWidth;
+      c.classList.remove('no-anim');
+    }
+    window.addEventListener('load', () => setTimeout(openBook, 650));
+
+    /* ── MODE SWITCHING ── */
+    function setMode(mode) {
+      const isSlides = mode === 'slides';
+      document.getElementById('slide-view').style.display  = isSlides ? '' : 'none';
+      document.getElementById('notes-view').style.display  = isSlides ? 'none' : '';
+      document.getElementById('btn-slides').classList.toggle('active', isSlides);
+      document.getElementById('btn-notes').classList.toggle('active', !isSlides);
+      if (isSlides) { resetBook(); setTimeout(openBook, 360); }
+    }
+
+    /* ── FULLSCREEN ── */
+    function toggleFullscreen() {
+      const wrap = document.getElementById('viewer-wrap');
+      if (!document.fullscreenElement) {
+        wrap.requestFullscreen().catch(() => {});
+        wrap.classList.add('viewer-fullscreen');
+      } else {
+        document.exitFullscreen();
+        wrap.classList.remove('viewer-fullscreen');
+      }
+    }
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement)
+        document.getElementById('viewer-wrap').classList.remove('viewer-fullscreen');
+    });
+
+    /* ── NOTES ── */
+    const NOTES_KEY   = 'revealed-notes-' + (file || title);
+    const notesArea   = document.getElementById('notes-area');
+    const wordCountEl = document.getElementById('notes-word-count');
+    const savedTag    = document.getElementById('notes-saved-tag');
+    let saveTimer;
+
+    notesArea.value = localStorage.getItem(NOTES_KEY) || '';
+    updateWordCount();
+
+    notesArea.addEventListener('input', () => {
+      updateWordCount();
+      savedTag.classList.remove('show');
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        localStorage.setItem(NOTES_KEY, notesArea.value);
+        savedTag.textContent = 'Saved';
+        savedTag.classList.add('show');
+        setTimeout(() => savedTag.classList.remove('show'), 2200);
+      }, 800);
+    });
+
+    function updateWordCount() {
+      const n = notesArea.value.trim().split(/\s+/).filter(Boolean).length;
+      wordCountEl.textContent = n + (n === 1 ? ' word' : ' words');
+    }
+    function clearNotes() {
+      if (!notesArea.value.trim() || !confirm('Clear notes for ' + title + '?')) return;
+      notesArea.value = '';
+      localStorage.removeItem(NOTES_KEY);
+      updateWordCount();
+    }
+    function copyNotes() {
+      if (!notesArea.value.trim()) return;
+      navigator.clipboard.writeText(notesArea.value).then(() => {
+        savedTag.textContent = 'Copied!';
+        savedTag.classList.add('show');
+        setTimeout(() => savedTag.classList.remove('show'), 2200);
+      });
+    }
+  </script>
+
+</body>
+</html>

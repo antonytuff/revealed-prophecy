@@ -415,6 +415,85 @@ footer {
 
 footer a { color: var(--gold); text-decoration: none; }
 
+/* ── CHAPTER LIST PAGE ── */
+.chapter-list-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.chapter-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem 1.4rem 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  gap: 0.35rem;
+}
+
+.chapter-card:hover {
+  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+  transform: translateY(-2px);
+  border-color: var(--gold-light);
+}
+
+.chapter-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.chapter-card h3 {
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  color: var(--accent);
+  line-height: 1.35;
+  flex: 1;
+}
+
+.chapter-arrow {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  transition: color 0.2s;
+}
+
+.chapter-card:hover .chapter-arrow { color: var(--gold); }
+
+.chapter-divider {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--accent);
+  margin: 2.5rem 0 1.2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Back breadcrumb in chapter header */
+.back-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+.back-crumb:hover { color: var(--gold); }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   nav { padding: 0 1rem; }
