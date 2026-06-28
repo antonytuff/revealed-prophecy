@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revelation Chapter 1 — Revealed</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    /* ── VIEWER SHELL ── */
+    .viewer-wrap {
+      background: #1a1a1a;
+      padding: 0;
+      position: relative;
+    }
+
+    .viewer-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.5rem;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+
+    .viewer-toolbar .title {
+      font-size: 0.85rem;
+      color: #aaa;
+      letter-spacing: 0.05em;
+    }
+
+    .viewer-toolbar .toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .viewer-toolbar button {
+      background: #222;
+      border: 1px solid #444;
+      color: #ccc;
+      padding: 0.35rem 0.9rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .viewer-toolbar button:hover,
+    .viewer-toolbar a:hover {
+      background: #333;
+      color: #fff;
+    }
+
+    .viewer-toolbar a {
+      background: #222;
+      border: 1px solid #444;
+      color: #ccc;
+      padding: 0.35rem 0.9rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .ms-iframe {
+      width: 100%;
+      height: 75vh;
+      min-height: 500px;
+      border: none;
+      display: block;
+      background: #222;
+    }
+
+    .viewer-fullscreen .ms-iframe {
+      height: 100vh;
+    }
+
+    /* Notice bar for unconfigured state */
+    .setup-notice {
+      background: #fffbe6;
+      border: 1px solid #f0d060;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem auto;
+      max-width: 720px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .setup-notice strong { color: #333; }
+    .setup-notice code {
+      background: #f0f0f0;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+
+    .setup-notice ol { margin: 0.75rem 0 0 1.25rem; }
+    .setup-notice ol li { margin-bottom: 0.4rem; }
+
+    /* ── MODE BAR ── */
+    .mode-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1.2rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .mode-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* fullscreen button */
+    #btn-fullscreen { margin-left: auto; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="index.html">Re<span>veal</span>ed</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="revelation-1.html">Revelation</a></li>
+    </ul>
+  </nav>
+
+  <header class="chapter-header">
+    <p class="eyebrow">Prophetic Book I</p>
+    <h1>The Book of Revelation</h1>
+    <p class="subtitle">Chapter 1 &mdash; An Introduction to the Vision</p>
+  </header>
+
+  <div class="mode-bar">
+    <button class="mode-btn active" id="btn-slides" onclick="setMode('slides')">
+      &#9634;&nbsp; Slide View
+    </button>
+    <button class="mode-btn" id="btn-reader" onclick="setMode('reader')">
+      &#9776;&nbsp; Reader View
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE VIEW — Microsoft Office Online
+  ══════════════════════════════════════════ -->
+  <div id="slide-view">
+
+    <div class="viewer-wrap" id="viewer-wrap">
+      <div class="viewer-toolbar">
+        <span class="title">Revelation Chapter 1</span>
+        <div class="toolbar-actions">
+          <button onclick="toggleFullscreen()" title="Fullscreen">
+            &#x26F6;&nbsp; Fullscreen
+          </button>
+          <a id="download-link" href="REVELATION 1.pps" download title="Download slides">
+            &#8659;&nbsp; Download
+          </a>
+        </div>
+      </div>
+
+      <!--
+        FILE_URL below must be the full public URL of your .pps file once hosted.
+        Example:  https://yourdomain.com/REVELATION%201.pps
+                  or a OneDrive share link (see setup notice below)
+        Replace FILE_URL_HERE with the real URL, then remove the setup-notice div.
+      -->
+      <iframe
+        id="ms-viewer"
+        class="ms-iframe"
+        src="https://view.officeapps.live.com/op/embed.aspx?src=FILE_URL_HERE"
+        allowfullscreen
+        title="Revelation Chapter 1 Slides">
+      </iframe>
+    </div>
+
+    <!-- shown only when FILE_URL_HERE is still the placeholder -->
+    <div class="setup-notice" id="setup-notice">
+      <strong>&#9888; One step left to activate the slide viewer.</strong><br>
+      Microsoft's viewer needs the file at a public URL. Here's how to set it up:
+      <ol>
+        <li>Upload <code>REVELATION 1.pps</code> to <strong>OneDrive</strong>, <strong>Google Drive</strong>, <strong>GitHub</strong>, or any web host.</li>
+        <li>Get the direct/public link to the file (e.g. <code>https://yourdomain.com/REVELATION%201.pps</code>).</li>
+        <li>In <code>revelation-1.html</code>, replace <code>FILE_URL_HERE</code> with that URL in the iframe <code>src</code>.</li>
+        <li>Save the file — the viewer will load the slides with full images, fonts &amp; layout.</li>
+      </ol>
+      <br>
+      <strong>Quick option:</strong> Upload to OneDrive → right-click the file → <em>Embed</em> → copy the <code>&lt;iframe&gt;</code> src URL and paste it in place of <code>FILE_URL_HERE</code>.
+    </div>
+
+  </div><!-- /slide-view -->
+
+  <!-- ══════════════════════════════════════════
+       READER VIEW
+  ══════════════════════════════════════════ -->
+  <div id="reader-view" style="display:none">
+
+    <div class="reader-section">
+      <p class="ref">Introduction</p>
+      <h3>What Is the Book of Revelation?</h3>
+      <p>REVELA'TION, n. [L. revelatus, revelo.] The act of disclosing or discovering to others what was before unknown to them; appropriately, the disclosure or communication of truth to men by God himself, or by his authorized agents, the prophets and apostles. — <em>Webster's Dictionary</em></p>
+      <p>The word <strong>Revelation</strong> means something <em>revealed</em> or shown to us. Yet many people say it can't be understood. This is not true at all!</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:1–2</p>
+      <h3>The Opening Verse</h3>
+      <blockquote>
+        The Revelation of Jesus Christ, which God gave unto him, to shew unto his servants things which must shortly come to pass; and he sent and signified it by his angel unto his servant John: Who bare record of the word of God, and of the testimony of Jesus Christ, and of all things that he saw.
+      </blockquote>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:3</p>
+      <h3>The Three Blessings</h3>
+      <blockquote>
+        Blessed is he that readeth, and they that hear the words of this prophecy, and keep those things which are written therein: for the time is at hand.
+      </blockquote>
+      <p>There are 3 blessings — for those who <em>read</em>; but some refuse to read it, so they won't have a blessing. For those who <em>hear</em> the words of the prophecy; but some will not listen to it, so they will have no blessing. And for those who will <em>keep</em> the things written in this book; but many will not keep them, so they will have no blessing.</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:5–6</p>
+      <h3>Loved and Made Kings</h3>
+      <blockquote>
+        Unto him that loved us, and washed us from our sins in his own blood, and hath made us kings and priests unto God.
+      </blockquote>
+      <p>Jesus loves us! We are to be kings and priests — children of the heavenly King, helping others to learn about Jesus! There is another unique thing about this book: it has 3 special blessings. No other book has these blessings.</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:7</p>
+      <h3>The Promise of Christ's Return</h3>
+      <blockquote>
+        Behold, he cometh with clouds; and every eye shall see him, and they also which pierced him: and all kindreds of the earth shall wail because of him. Even so, Amen.
+      </blockquote>
+      <p>Jesus is coming in clouds of pure white to take His children home. We must be ready when Jesus comes! There will be two groups at that time — those who are ready, and those who loved worldly things and did not give their hearts to Jesus.</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:8</p>
+      <h3>Alpha and Omega</h3>
+      <blockquote>
+        I am Alpha and Omega, the beginning and the ending, saith the Lord, which is, and which was, and which is to come, the Almighty.
+      </blockquote>
+      <p>In the Greek alphabet, Alpha was the first letter and Omega was the last. Jesus is telling us He is there at the beginning and will be there at the end — and all the time in between. He is the A to Z.</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:9</p>
+      <h3>John on the Isle of Patmos</h3>
+      <blockquote>
+        I John, who also am your brother, and companion in tribulation, and in the kingdom and patience of Jesus Christ, was in the isle that is called Patmos, for the word of God, and for the testimony of Jesus Christ.
+      </blockquote>
+      <p>The Roman Emperor ordered John to be boiled in oil — but he wasn't even hurt! Just like the three Hebrews in the fiery furnace, he was quite safe. Not knowing what to do, they sent him to Patmos. But there on that rocky island, <strong>Jesus came to visit him and gave him the Revelation.</strong></p>
+      <p>John's most important work was <em>after</em> Patmos — he wrote both Revelation and the Gospel of John.</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:10–13</p>
+      <h3>The Vision Begins</h3>
+      <blockquote>
+        I was in the Spirit on the Lord's day, and heard behind me a great voice, as of a trumpet...and I turned to see the voice that spake with me. And being turned, I saw seven golden candlesticks; and in the midst of the seven candlesticks one like unto the Son of man.
+      </blockquote>
+      <p>One of the most important things about understanding prophecy: <strong>you must use the Bible to tell you what the Bible means.</strong> The Lord's Day is the 7th day Sabbath — <em>"Therefore the Son of man is Lord also of the Sabbath." — Mark 2:28</em></p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:14–16</p>
+      <h3>The Glorious Appearance</h3>
+      <blockquote>
+        His head and his hairs were white like wool, as white as snow; and his eyes were as a flame of fire; and his feet like unto fine brass, as if they burned in a furnace; and his voice as the sound of many waters. And out of his mouth went a sharp two-edged sword.
+      </blockquote>
+      <p>The <strong>two-edged sword</strong> out of His mouth represents the Word of God — the Bible. With it we defeat the cruel enemy, Satan.</p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:17–19</p>
+      <h3>Fear Not — Jesus Has the Keys</h3>
+      <blockquote>
+        And when I saw him, I fell at his feet as dead. And he laid his right hand upon me, saying unto me, Fear not; I am the first and the last: I am he that liveth, and was dead; and, behold, I am alive for evermore, Amen; and have the keys of hell and of death.
+      </blockquote>
+      <p>Jesus lives! He died for us and rose again. Now He has the keys — the keys to let His dear people out of the prison of death and the grave. When Jesus comes, <strong>they will rise again, because Jesus has the keys!</strong></p>
+    </div>
+
+    <hr class="reader-divider" />
+
+    <div class="reader-section">
+      <p class="ref">Revelation 1:20</p>
+      <h3>The Mystery of the Seven Stars</h3>
+      <blockquote>
+        The mystery of the seven stars which thou sawest in my right hand, and the seven golden candlesticks. The seven stars are the angels of the seven churches: and the seven candlesticks which thou sawest are the seven churches.
+      </blockquote>
+      <p>Seven in Bible numbers means <em>complete</em> or <em>perfect</em>. The seven churches means all God's people — both back then and down through the ages to the end of time. The messages to them hold instruction for all of God's children in all times.</p>
+    </div>
+
+  </div><!-- /reader-view -->
+
+  <footer>
+    <p>Revealed &mdash; Prophetic Bible Studies &nbsp;|&nbsp; <a href="index.html">Home</a></p>
+  </footer>
+
+  <script>
+    function setMode(mode) {
+      const isSlides = mode === 'slides';
+      document.getElementById('slide-view').style.display = isSlides ? '' : 'none';
+      document.getElementById('reader-view').style.display = isSlides ? 'none' : '';
+      document.getElementById('btn-slides').classList.toggle('active', isSlides);
+      document.getElementById('btn-reader').classList.toggle('active', !isSlides);
+    }
+
+    function toggleFullscreen() {
+      const wrap = document.getElementById('viewer-wrap');
+      if (!document.fullscreenElement) {
+        wrap.requestFullscreen().catch(() => {});
+        wrap.classList.add('viewer-fullscreen');
+      } else {
+        document.exitFullscreen();
+        wrap.classList.remove('viewer-fullscreen');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        document.getElementById('viewer-wrap').classList.remove('viewer-fullscreen');
+      }
+    });
+
+    // Hide setup notice once a real URL is configured
+    (function() {
+      const iframe = document.getElementById('ms-viewer');
+      const notice = document.getElementById('setup-notice');
+      if (iframe && !iframe.src.includes('FILE_URL_HERE')) {
+        if (notice) notice.style.display = 'none';
+      }
+    })();
+  </script>
+
+</body>
+</html>
