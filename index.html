@@ -419,13 +419,32 @@
   </footer>
 
   <script>
-    const VID_KEY  = 'revealed-videos-home';
+    const VID_KEY = 'revealed-videos-home';
+
+    /* Default seed videos — shown on first visit */
+    const SEED_VIDEOS = [
+      {
+        id:    'mck2kNMvLvs',
+        title: 'Armageddon and the Final Events of Bible Prophecy | Doug Batchelor (Amazing Facts)',
+        start: 295
+      },
+      {
+        id:    'c0xHf6LS_yE',
+        title: 'Kingdoms in Time: History\'s Greatest Bible Prophecies with Doug Batchelor',
+        start: 226
+      }
+    ];
+
     let vidList    = [];
     let currentIdx = -1;
     let addOpen    = false;
 
     (function init() {
-      try { vidList = JSON.parse(localStorage.getItem(VID_KEY) || '[]'); } catch { vidList = []; }
+      try { vidList = JSON.parse(localStorage.getItem(VID_KEY)); } catch {}
+      if (!Array.isArray(vidList) || vidList.length === 0) {
+        vidList = SEED_VIDEOS.slice();
+        saveVids();
+      }
       renderList();
     })();
 
@@ -462,7 +481,8 @@
       const iframe = document.getElementById('yt-iframe');
       const ph     = document.getElementById('yt-placeholder');
       const np     = document.getElementById('yt-now-playing');
-      iframe.src   = 'https://www.youtube.com/embed/' + v.id + '?autoplay=1&rel=0';
+      const start  = v.start ? '&start=' + v.start : '';
+      iframe.src   = 'https://www.youtube.com/embed/' + v.id + '?autoplay=1&rel=0' + start;
       ph.style.display = 'none';
       np.style.display = 'flex';
       document.getElementById('yt-now-title').textContent = v.title;
@@ -481,17 +501,24 @@
       saveVids(); renderList();
     }
 
-    function extractId(url) {
+    /* Parse video ID and optional timestamp from any YouTube URL */
+    function extractInfo(url) {
       url = url.trim();
+      let id = null, start = 0;
+
+      const tMatch = url.match(/[?&]t=(\d+)s?/);
+      if (tMatch) start = parseInt(tMatch[1], 10);
+
       const patterns = [
         /youtu\.be\/([^?&\s]+)/,
         /youtube\.com\/watch\?.*v=([^&\s]+)/,
         /youtube\.com\/embed\/([^?&\s]+)/,
         /youtube\.com\/shorts\/([^?&\s]+)/,
       ];
-      for (const p of patterns) { const m = url.match(p); if (m) return m[1]; }
-      if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
-      return null;
+      for (const p of patterns) { const m = url.match(p); if (m) { id = m[1]; break; } }
+      if (!id && /^[a-zA-Z0-9_-]{11}$/.test(url)) id = url;
+
+      return id ? { id, start } : null;
     }
 
     function esc(s) {
@@ -505,19 +532,19 @@
       const url   = input.value.trim();
       if (!url) { input.focus(); return; }
 
-      const id = extractId(url);
-      if (!id) { alert('Could not find a YouTube video ID. Please paste a full YouTube URL.'); return; }
-      if (vidList.some(v => v.id === id)) { alert('This video is already in the library.'); return; }
+      const info = extractInfo(url);
+      if (!info) { alert('Could not find a YouTube video ID. Please paste a full YouTube URL.'); return; }
+      if (vidList.some(v => v.id === info.id)) { alert('This video is already in the library.'); return; }
 
       btn.textContent = 'Adding…'; btn.disabled = true;
 
       let title = 'YouTube Video';
       try {
-        const res = await fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=' + id + '&format=json');
+        const res = await fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=' + info.id + '&format=json');
         if (res.ok) { const d = await res.json(); title = d.title || title; }
       } catch {}
 
-      vidList.push({ id, title });
+      vidList.push({ id: info.id, title, start: info.start });
       saveVids(); renderList();
       input.value = ''; btn.textContent = 'Add'; btn.disabled = false;
 
