@@ -6,10 +6,209 @@
   <title>Revelation Chapter 1 — Revealed</title>
   <link rel="stylesheet" href="assets/style.css" />
   <style>
-    /* ── VIEWER SHELL ── */
+
+    /* ══════════════════════════════════════════
+       BOOK SCENE — 3-D perspective container
+    ══════════════════════════════════════════ */
+    .book-scene {
+      position: relative;
+      perspective: 3200px;
+      perspective-origin: 50% 38%;
+    }
+
+    /* ══════════════════════════════════════════
+       BOOK COVER
+    ══════════════════════════════════════════ */
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .book-cover.is-open { pointer-events: none; }
+
+    /* Disable transition during instant-reset */
+    .book-cover.no-anim .cover-half { transition: none !important; }
+
+    /* ── Left page ── */
+    .cover-left {
+      flex: 1;
+      position: relative;
+      transform-origin: right center;
+      will-change: transform;
+      backface-visibility: hidden;
+      overflow: hidden;
+      transition: transform 1.4s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+
+      background:
+        radial-gradient(ellipse at 30% 40%, #6b3f22 0%, transparent 60%),
+        linear-gradient(160deg, #3d2412 0%, #5e3820 35%, #4c2d1a 65%, #301808 100%);
+
+      border-right: 4px solid #150b04;
+      box-shadow:
+        inset -16px 0 40px rgba(0,0,0,0.65),
+        inset 0 0 80px rgba(0,0,0,0.2);
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 2.5rem 3.5rem 2.5rem 2rem;
+    }
+
+    /* ── Right page ── */
+    .cover-right {
+      flex: 1;
+      position: relative;
+      transform-origin: left center;
+      will-change: transform;
+      backface-visibility: hidden;
+      overflow: hidden;
+      transition: transform 1.4s cubic-bezier(0.645, 0.045, 0.355, 1.000) 0.07s;
+
+      background:
+        radial-gradient(ellipse at 70% 60%, #6b3f22 0%, transparent 60%),
+        linear-gradient(200deg, #301808 0%, #4c2d1a 40%, #5e3820 72%, #3d2412 100%);
+
+      border-left: 4px solid #150b04;
+      box-shadow:
+        inset 16px 0 40px rgba(0,0,0,0.65),
+        inset 0 0 80px rgba(0,0,0,0.2);
+
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2.5rem 2rem 2.5rem 3.5rem;
+    }
+
+    /* Open states — fold each page away */
+    .book-cover.is-open .cover-left  { transform: rotateY(-180deg); }
+    .book-cover.is-open .cover-right { transform: rotateY(180deg); }
+
+    /* Gold filigree border inset */
+    .cover-left::before,  .cover-right::before {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(184, 134, 11, 0.38);
+      pointer-events: none;
+    }
+    .cover-left::after, .cover-right::after {
+      content: '';
+      position: absolute;
+      inset: 26px;
+      border: 1px solid rgba(184, 134, 11, 0.16);
+      pointer-events: none;
+    }
+
+    /* Shimmer sweep across left page */
+    .cover-shimmer {
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255,255,255,0.04) 50%,
+        transparent 70%
+      );
+      animation: shimmer-sweep 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer-sweep {
+      0%   { left: -80%; }
+      50%  { left: 140%; }
+      100% { left: 140%; }
+    }
+
+    /* ── Cover text (left page) ── */
+    .cover-text { text-align: right; }
+
+    .cover-eyebrow {
+      font-family: var(--sans);
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(212, 160, 23, 0.55);
+      margin-bottom: 0.7rem;
+    }
+
+    .cover-title {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+      color: #d4a017;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+      text-shadow: 0 3px 16px rgba(0,0,0,0.7), 0 0 40px rgba(212,160,23,0.15);
+      letter-spacing: 0.02em;
+    }
+
+    .cover-chapter-label {
+      font-family: var(--serif);
+      font-size: 0.82rem;
+      color: rgba(212, 160, 23, 0.72);
+      letter-spacing: 0.1em;
+      margin-bottom: 1.1rem;
+    }
+
+    .cover-rule {
+      width: 50px;
+      height: 1px;
+      background: linear-gradient(to left, rgba(212,160,23,0.55), transparent);
+      margin-left: auto;
+      margin-bottom: 1.4rem;
+    }
+
+    .cover-cta {
+      font-family: var(--sans);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(212, 160, 23, 0.5);
+      animation: pulse-cta 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse-cta {
+      0%, 100% { opacity: 0.35; }
+      50%       { opacity: 0.85; }
+    }
+
+    /* ── Cover emblem (right page) ── */
+    .cover-emblem { text-align: left; }
+
+    .emblem-cross {
+      font-size: clamp(2.4rem, 4vw, 3.8rem);
+      color: rgba(212, 160, 23, 0.25);
+      line-height: 1;
+      margin-bottom: 0.6rem;
+      text-shadow: 0 0 30px rgba(212,160,23,0.1);
+    }
+
+    .emblem-stars {
+      font-size: 0.9rem;
+      color: rgba(212, 160, 23, 0.18);
+      letter-spacing: 0.4em;
+    }
+
+    .emblem-label {
+      font-family: var(--serif);
+      font-size: 0.65rem;
+      color: rgba(212, 160, 23, 0.28);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+
+    /* ══════════════════════════════════════════
+       VIEWER SHELL
+    ══════════════════════════════════════════ */
     .viewer-wrap {
       background: #1a1a1a;
-      padding: 0;
       position: relative;
     }
 
@@ -28,32 +227,9 @@
       letter-spacing: 0.05em;
     }
 
-    .viewer-toolbar .toolbar-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
+    .viewer-toolbar .toolbar-actions { display: flex; gap: 0.5rem; }
 
-    .viewer-toolbar button {
-      background: #222;
-      border: 1px solid #444;
-      color: #ccc;
-      padding: 0.35rem 0.9rem;
-      border-radius: 5px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .viewer-toolbar button:hover,
-    .viewer-toolbar a:hover {
-      background: #333;
-      color: #fff;
-    }
-
+    .viewer-toolbar button,
     .viewer-toolbar a {
       background: #222;
       border: 1px solid #444;
@@ -69,6 +245,9 @@
       transition: background 0.2s, color 0.2s;
     }
 
+    .viewer-toolbar button:hover,
+    .viewer-toolbar a:hover { background: #333; color: #fff; }
+
     .ms-iframe {
       width: 100%;
       height: 75vh;
@@ -78,11 +257,9 @@
       background: #222;
     }
 
-    .viewer-fullscreen .ms-iframe {
-      height: 100vh;
-    }
+    .viewer-fullscreen .ms-iframe { height: 100vh; }
 
-    /* Notice bar for unconfigured state */
+    /* Setup notice */
     .setup-notice {
       background: #fffbe6;
       border: 1px solid #f0d060;
@@ -94,7 +271,6 @@
       line-height: 1.6;
       color: #555;
     }
-
     .setup-notice strong { color: #333; }
     .setup-notice code {
       background: #f0f0f0;
@@ -102,11 +278,12 @@
       border-radius: 3px;
       font-size: 0.85rem;
     }
-
     .setup-notice ol { margin: 0.75rem 0 0 1.25rem; }
     .setup-notice ol li { margin-bottom: 0.4rem; }
 
-    /* ── MODE BAR ── */
+    /* ══════════════════════════════════════════
+       MODE BAR
+    ══════════════════════════════════════════ */
     .mode-bar {
       display: flex;
       align-items: center;
@@ -138,8 +315,127 @@
       color: #fff;
     }
 
-    /* fullscreen button */
-    #btn-fullscreen { margin-left: auto; }
+    /* ══════════════════════════════════════════
+       NOTES VIEW
+    ══════════════════════════════════════════ */
+    .notes-view-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    .notes-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .notes-heading-row h2 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      color: var(--accent);
+    }
+
+    .notes-heading-row .notes-ref {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .notes-hint {
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .notes-area {
+      width: 100%;
+      min-height: 300px;
+      padding: 1.4rem 1.6rem;
+      font-family: var(--serif);
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--text);
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+
+    .notes-area:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.13);
+      background: var(--bg);
+    }
+
+    .notes-area::placeholder {
+      color: #c8c1b5;
+      font-style: italic;
+      line-height: 1.9;
+    }
+
+    .notes-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .notes-word-count {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .notes-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+    .notes-saved-tag {
+      font-size: 0.75rem;
+      color: #2d6a2d;
+      opacity: 0;
+      transition: opacity 0.35s;
+      margin-right: 0.25rem;
+    }
+    .notes-saved-tag.show { opacity: 1; }
+
+    .notes-btn {
+      font-size: 0.8rem;
+      padding: 0.32rem 0.9rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .notes-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .notes-btn.danger:hover {
+      border-color: #c0392b;
+      color: #c0392b;
+      background: #fef0ef;
+    }
+
+    /* ══════════════════════════════════════════
+       READER VIEW (overrides on top of global)
+    ══════════════════════════════════════════ */
+    #reader-view {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
   </style>
 </head>
 <body>
@@ -165,42 +461,66 @@
     <button class="mode-btn" id="btn-reader" onclick="setMode('reader')">
       &#9776;&nbsp; Reader View
     </button>
+    <button class="mode-btn" id="btn-notes" onclick="setMode('notes')">
+      &#9998;&nbsp; Notes
+    </button>
   </div>
 
   <!-- ══════════════════════════════════════════
-       SLIDE VIEW — Microsoft Office Online
+       SLIDE VIEW
   ══════════════════════════════════════════ -->
   <div id="slide-view">
 
-    <div class="viewer-wrap" id="viewer-wrap">
-      <div class="viewer-toolbar">
-        <span class="title">Revelation Chapter 1</span>
-        <div class="toolbar-actions">
-          <button onclick="toggleFullscreen()" title="Fullscreen">
-            &#x26F6;&nbsp; Fullscreen
-          </button>
-          <a id="download-link" href="REVELATION 1.pps" download title="Download slides">
-            &#8659;&nbsp; Download
-          </a>
+    <div class="book-scene">
+
+      <!-- Book cover — animates open on load and on each entry -->
+      <div class="book-cover" id="book-cover" onclick="openBook()">
+
+        <div class="cover-half cover-left">
+          <div class="cover-shimmer"></div>
+          <div class="cover-text">
+            <p class="cover-eyebrow">Prophetic Book I</p>
+            <h2 class="cover-title">Revelation</h2>
+            <p class="cover-chapter-label">Chapter I</p>
+            <div class="cover-rule"></div>
+            <span class="cover-cta">Click to open</span>
+          </div>
         </div>
+
+        <div class="cover-half cover-right">
+          <div class="cover-emblem">
+            <div class="emblem-cross">&#10013;</div>
+            <div class="emblem-stars">&#10022; &#10022; &#10022;</div>
+            <div class="emblem-label">Revealed</div>
+          </div>
+        </div>
+
+      </div><!-- /book-cover -->
+
+      <!-- MS Office viewer -->
+      <div class="viewer-wrap" id="viewer-wrap">
+        <div class="viewer-toolbar">
+          <span class="title">Revelation Chapter 1</span>
+          <div class="toolbar-actions">
+            <button onclick="toggleFullscreen()" title="Fullscreen">
+              &#x26F6;&nbsp; Fullscreen
+            </button>
+            <a href="REVELATION 1.pps" download title="Download slides">
+              &#8659;&nbsp; Download
+            </a>
+          </div>
+        </div>
+        <iframe
+          id="ms-viewer"
+          class="ms-iframe"
+          src="https://view.officeapps.live.com/op/embed.aspx?src=https://raw.githubusercontent.com/antonytuff/revealed-prophecy/master/REVELATION%201.pps"
+          allowfullscreen
+          title="Revelation Chapter 1 Slides">
+        </iframe>
       </div>
 
-      <!--
-        FILE_URL below must be the full public URL of your .pps file once hosted.
-        Example:  https://yourdomain.com/REVELATION%201.pps
-                  or a OneDrive share link (see setup notice below)
-        Replace FILE_URL_HERE with the real URL, then remove the setup-notice div.
-      -->
-      <iframe
-        id="ms-viewer"
-        class="ms-iframe"
-        src="https://view.officeapps.live.com/op/embed.aspx?src=https://raw.githubusercontent.com/antonytuff/revealed-prophecy/master/REVELATION%201.pps"
-        allowfullscreen
-        title="Revelation Chapter 1 Slides">
-      </iframe>
-    </div>
+    </div><!-- /book-scene -->
 
-    <!-- shown only when FILE_URL_HERE is still the placeholder -->
     <div class="setup-notice" id="setup-notice">
       <strong>&#9888; One step left to activate the slide viewer.</strong><br>
       Microsoft's viewer needs the file at a public URL. Here's how to set it up:
@@ -211,7 +531,7 @@
         <li>Save the file — the viewer will load the slides with full images, fonts &amp; layout.</li>
       </ol>
       <br>
-      <strong>Quick option:</strong> Upload to OneDrive → right-click the file → <em>Embed</em> → copy the <code>&lt;iframe&gt;</code> src URL and paste it in place of <code>FILE_URL_HERE</code>.
+      <strong>Quick option:</strong> Upload to OneDrive &rarr; right-click the file &rarr; <em>Embed</em> &rarr; copy the <code>&lt;iframe&gt;</code> src URL and paste it in place of <code>FILE_URL_HERE</code>.
     </div>
 
   </div><!-- /slide-view -->
@@ -340,18 +660,85 @@
 
   </div><!-- /reader-view -->
 
+  <!-- ══════════════════════════════════════════
+       NOTES VIEW
+  ══════════════════════════════════════════ -->
+  <div id="notes-view" style="display:none">
+    <div class="notes-view-inner">
+
+      <div class="notes-heading-row">
+        <h2>Study Notes</h2>
+        <span class="notes-ref">Revelation &middot; Chapter 1</span>
+      </div>
+
+      <p class="notes-hint">
+        Capture insights, questions, or reflections as you study. Notes are saved automatically in your browser.
+      </p>
+
+      <textarea
+        id="notes-area"
+        class="notes-area"
+        placeholder="Begin writing your notes here…&#10;&#10;&quot;Blessed is he that readeth, and they that hear the words of this prophecy.&quot;&#10;— Revelation 1:3"
+        rows="16"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="notes-footer-row">
+        <span class="notes-word-count" id="notes-word-count">0 words</span>
+        <div class="notes-actions">
+          <span class="notes-saved-tag" id="notes-saved-tag">Saved</span>
+          <button class="notes-btn" onclick="copyNotes()">Copy</button>
+          <button class="notes-btn danger" onclick="clearNotes()">Clear</button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /notes-view -->
+
   <footer>
     <p>Revealed &mdash; Prophetic Bible Studies &nbsp;|&nbsp; <a href="index.html">Home</a></p>
   </footer>
 
   <script>
-    function setMode(mode) {
-      const isSlides = mode === 'slides';
-      document.getElementById('slide-view').style.display = isSlides ? '' : 'none';
-      document.getElementById('reader-view').style.display = isSlides ? 'none' : '';
-      document.getElementById('btn-slides').classList.toggle('active', isSlides);
-      document.getElementById('btn-reader').classList.toggle('active', !isSlides);
+    /* ── BOOK ANIMATION ─────────────────────────── */
+
+    function openBook() {
+      const cover = document.getElementById('book-cover');
+      if (cover.classList.contains('is-open')) return;
+      cover.classList.add('is-open');
     }
+
+    function resetBook() {
+      /* Instant reset (no visible animation) while slide-view is hidden */
+      const cover = document.getElementById('book-cover');
+      cover.classList.add('no-anim');
+      cover.classList.remove('is-open');
+      cover.offsetWidth; /* force reflow so transition stays suppressed */
+      cover.classList.remove('no-anim');
+    }
+
+    /* Auto-open on first load */
+    window.addEventListener('load', () => setTimeout(openBook, 650));
+
+    /* ── MODE SWITCHING ─────────────────────────── */
+
+    function setMode(mode) {
+      const views   = { slides: 'slide-view', reader: 'reader-view', notes: 'notes-view' };
+      const buttons = { slides: 'btn-slides',  reader: 'btn-reader',  notes: 'btn-notes'  };
+
+      Object.keys(views).forEach(key => {
+        const show = key === mode;
+        document.getElementById(views[key]).style.display   = show ? '' : 'none';
+        document.getElementById(buttons[key]).classList.toggle('active', show);
+      });
+
+      if (mode === 'slides') {
+        resetBook();
+        setTimeout(openBook, 360);
+      }
+    }
+
+    /* ── FULLSCREEN ─────────────────────────────── */
 
     function toggleFullscreen() {
       const wrap = document.getElementById('viewer-wrap');
@@ -365,19 +752,64 @@
     }
 
     document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
+      if (!document.fullscreenElement)
         document.getElementById('viewer-wrap').classList.remove('viewer-fullscreen');
-      }
     });
 
-    // Hide setup notice once a real URL is configured
-    (function() {
-      const iframe = document.getElementById('ms-viewer');
-      const notice = document.getElementById('setup-notice');
-      if (iframe && !iframe.src.includes('FILE_URL_HERE')) {
-        if (notice) notice.style.display = 'none';
-      }
+    /* Hide setup notice once a real URL is configured */
+    (function () {
+      const iframe  = document.getElementById('ms-viewer');
+      const notice  = document.getElementById('setup-notice');
+      if (iframe && !iframe.src.includes('FILE_URL_HERE') && notice)
+        notice.style.display = 'none';
     })();
+
+    /* ── NOTES ─────────────────────────────────── */
+
+    const NOTES_KEY   = 'revealed-notes-revelation-1';
+    const notesArea   = document.getElementById('notes-area');
+    const wordCountEl = document.getElementById('notes-word-count');
+    const savedTag    = document.getElementById('notes-saved-tag');
+
+    let saveTimer;
+
+    /* Restore saved notes */
+    notesArea.value = localStorage.getItem(NOTES_KEY) || '';
+    updateWordCount();
+
+    notesArea.addEventListener('input', () => {
+      updateWordCount();
+      savedTag.classList.remove('show');
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        localStorage.setItem(NOTES_KEY, notesArea.value);
+        savedTag.textContent = 'Saved';
+        savedTag.classList.add('show');
+        setTimeout(() => savedTag.classList.remove('show'), 2200);
+      }, 800);
+    });
+
+    function updateWordCount() {
+      const n = notesArea.value.trim().split(/\s+/).filter(Boolean).length;
+      wordCountEl.textContent = n + (n === 1 ? ' word' : ' words');
+    }
+
+    function clearNotes() {
+      if (!notesArea.value.trim()) return;
+      if (!confirm('Clear all notes for Revelation Chapter 1?')) return;
+      notesArea.value = '';
+      localStorage.removeItem(NOTES_KEY);
+      updateWordCount();
+    }
+
+    function copyNotes() {
+      if (!notesArea.value.trim()) return;
+      navigator.clipboard.writeText(notesArea.value).then(() => {
+        savedTag.textContent = 'Copied!';
+        savedTag.classList.add('show');
+        setTimeout(() => savedTag.classList.remove('show'), 2200);
+      });
+    }
   </script>
 
 </body>
