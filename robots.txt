@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /viewer.html
+
+Sitemap: https://antonytuff.github.io/revealed-prophecy/sitemap.xml
