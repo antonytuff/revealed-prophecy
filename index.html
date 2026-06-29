@@ -6,6 +6,343 @@
   <title>Revealed — Prophetic Bible Studies</title>
   <link rel="stylesheet" href="assets/style.css" />
   <style>
+    /* ════════════════════════════════════════════
+       HOMEPAGE SECTION ENHANCEMENTS
+    ════════════════════════════════════════════ */
+
+    /* ── Hero — warm atmospheric ── */
+    .hero {
+      background:
+        radial-gradient(ellipse 70% 55% at 50% -10%, rgba(212,160,23,.10) 0%, transparent 62%),
+        radial-gradient(ellipse 40% 35% at 0% 100%,  rgba(74,55,40,.06) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 35% at 100% 100%,rgba(74,55,40,.05) 0%, transparent 55%),
+        linear-gradient(180deg, #faf5ec 0%, #f5efe2 55%, #f0e9d9 100%) !important;
+      padding: 6.5rem 2rem 5.5rem !important;
+      border-bottom: none !important;
+    }
+
+    .hero-eyebrow {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: .9rem;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: '';
+      width: 30px; height: 1px;
+      background: rgba(184,134,11,.45);
+    }
+
+    .hero-divider {
+      width: 48px !important;
+      height: 1px !important;
+      background: linear-gradient(to right, transparent, var(--gold), transparent) !important;
+      margin: 0 auto 0 !important;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: .85rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
+
+    .hero-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      padding: .68rem 1.75rem;
+      border-radius: 8px;
+      font-size: .875rem;
+      font-family: var(--sans);
+      letter-spacing: .01em;
+      transition: all .22s;
+      font-weight: 500;
+    }
+    .hero-cta-btn.primary {
+      background: var(--accent);
+      color: #f4ead8;
+      border: 1px solid var(--accent);
+      box-shadow: 0 4px 18px rgba(74,55,40,.22);
+    }
+    .hero-cta-btn.primary:hover  { background: #3a2918; box-shadow: 0 6px 26px rgba(74,55,40,.34); }
+    .hero-cta-btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(74,55,40,.28);
+    }
+    .hero-cta-btn.secondary:hover { border-color: var(--accent); background: rgba(74,55,40,.04); }
+
+    /* ── Books showcase — dark cinematic ── */
+    .books-section {
+      background:
+        radial-gradient(ellipse 85% 60% at 50% 55%, rgba(110,68,20,.22) 0%, transparent 72%),
+        linear-gradient(180deg, #0e0903 0%, #171008 35%, #1c1409 65%, #0e0903 100%) !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 5rem 2rem 5.5rem !important;
+      border-top: 1px solid rgba(184,134,11,.12);
+      border-bottom: 1px solid rgba(184,134,11,.12);
+    }
+
+    .books-inner { max-width: 1000px; margin: 0 auto; }
+
+    .books-showcase-head {
+      text-align: center;
+      margin-bottom: 3.25rem;
+    }
+
+    .books-showcase-eyebrow {
+      font-size: .67rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: rgba(212,160,23,.62);
+      margin-bottom: .7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .85rem;
+    }
+    .books-showcase-eyebrow::before, .books-showcase-eyebrow::after {
+      content: '';
+      width: 28px; height: 1px;
+      background: rgba(184,134,11,.32);
+    }
+
+    .books-showcase-head h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.55rem, 2.8vw, 2.05rem);
+      color: rgba(242,228,204,.88);
+      font-weight: normal;
+      letter-spacing: .02em;
+      margin-bottom: 1rem;
+    }
+
+    .books-showcase-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      width: 140px;
+      margin: 0 auto;
+    }
+    .books-showcase-rule::before, .books-showcase-rule::after {
+      content: ''; flex: 1; height: 1px;
+      background: rgba(184,134,11,.28);
+    }
+    .books-diamond {
+      width: 5px; height: 5px;
+      background: rgba(184,134,11,.52);
+      transform: rotate(45deg); flex-shrink: 0;
+    }
+
+    /* Cards pop harder against dark bg */
+    .books-section .book-card {
+      box-shadow: 0 10px 44px rgba(0,0,0,.5), 0 0 0 1px rgba(184,134,11,.07) !important;
+    }
+    .books-section .book-card:hover {
+      box-shadow: 0 18px 60px rgba(0,0,0,.62), 0 0 0 1px rgba(184,134,11,.18) !important;
+      transform: translateY(-7px) !important;
+    }
+
+    /* ── Video Library — warm parchment ── */
+    .videos-section {
+      background:
+        radial-gradient(ellipse 65% 50% at 50% 0%, rgba(212,160,23,.055) 0%, transparent 62%),
+        linear-gradient(180deg, #fdf9f2 0%, #f8f2e7 100%) !important;
+    }
+
+    .videos-eyebrow {
+      font-size: .67rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: .3rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .videos-eyebrow::before {
+      content: '';
+      width: 22px; height: 1px;
+      background: rgba(184,134,11,.5);
+    }
+
+    .videos-section-head {
+      padding-bottom: 1.5rem !important;
+      border-bottom: 1px solid rgba(184,134,11,.15) !important;
+    }
+
+    .videos-section-head h2 {
+      color: var(--accent) !important;
+      margin-bottom: .2rem !important;
+    }
+
+    /* ══════════════════════════════════════════
+       BOOK CARDS — COVER STYLE
+    ══════════════════════════════════════════ */
+
+    /* Override base card for cover layout */
+    .book-card {
+      padding: 0 !important;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 390px;
+      border-radius: 12px !important;
+      border: none !important;
+      box-shadow: 0 6px 28px rgba(0,0,0,.10);
+    }
+    .book-card:hover {
+      box-shadow: 0 14px 44px rgba(0,0,0,.18) !important;
+      transform: translateY(-4px) !important;
+    }
+
+    /* ── Cover area ── */
+    .book-cover {
+      height: 220px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Star-field dots */
+    .book-cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,220,120,.75) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 42% 9%,  rgba(255,220,120,.55) 0%, transparent 100%),
+        radial-gradient(2px   2px   at 68% 22%, rgba(255,220,120,.65) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 83% 14%, rgba(255,220,120,.45) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 23% 38%, rgba(255,220,120,.55) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 57% 32%, rgba(255,220,120,.45) 0%, transparent 100%),
+        radial-gradient(2px   2px   at 88% 42%, rgba(255,220,120,.55) 0%, transparent 100%),
+        radial-gradient(1px   1px   at  8% 58%, rgba(255,220,120,.38) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 34% 67%, rgba(255,220,120,.42) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 76% 63%, rgba(255,220,120,.48) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 51% 78%, rgba(255,220,120,.35) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 93% 72%, rgba(255,220,120,.40) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Central glow orb */
+    .book-cover::after {
+      content: '';
+      position: absolute;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      top: 38%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .book-cover-eyebrow {
+      font-size: .58rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: rgba(212,160,23,.65);
+      font-family: var(--sans);
+      position: relative; z-index: 1;
+    }
+
+    .book-cover-roman {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      font-weight: bold;
+      line-height: 1;
+      position: relative; z-index: 1;
+      letter-spacing: .06em;
+    }
+
+    .book-cover-rule {
+      width: 40px; height: 1px;
+      position: relative; z-index: 1;
+    }
+
+    .book-cover-title {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      letter-spacing: .08em;
+      text-align: center;
+      line-height: 1.25;
+      position: relative; z-index: 1;
+      padding: 0 1rem;
+    }
+
+    /* ── Revelation theme  (crimson · purple · ember) ── */
+    .revelation-card .book-cover {
+      background:
+        radial-gradient(ellipse 75% 55% at 50% 38%, rgba(255,190,70,.20) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 12% 88%, rgba(210,15,55,.42)  0%, transparent 58%),
+        radial-gradient(ellipse 55% 45% at 88% 85%, rgba(95,0,155,.38)   0%, transparent 58%),
+        radial-gradient(ellipse 100% 45% at 50% 100%, rgba(140,0,25,.55) 0%, transparent 50%),
+        linear-gradient(168deg, #07000f 0%, #1a0028 22%, #3b0018 55%, #6b000f 82%, #8c1200 100%);
+    }
+    .revelation-card .book-cover::after {
+      background: radial-gradient(circle,
+        rgba(255,200,70,.48)  0%,
+        rgba(255,120,30,.22)  42%,
+        transparent 72%);
+      box-shadow:
+        0 0 38px 18px rgba(255,140,30,.14),
+        0 0 72px 38px rgba(190,40,0,.08);
+    }
+    .revelation-card .book-cover-roman { color: rgba(255,210,100,.88); text-shadow: 0 0 24px rgba(255,130,0,.5); }
+    .revelation-card .book-cover-rule  { background: rgba(212,160,23,.45); }
+    .revelation-card .book-cover-title { color: rgba(242,224,200,.88); text-shadow: 0 2px 14px rgba(0,0,0,.75), 0 0 28px rgba(200,50,80,.4); }
+
+    /* ── Daniel theme  (midnight navy · amber · Babylon gold) ── */
+    .daniel-card .book-cover {
+      background:
+        radial-gradient(ellipse 60% 42% at 50% 18%, rgba(255,205,55,.16) 0%, transparent 58%),
+        radial-gradient(ellipse 75% 48% at  8% 58%, rgba(8,38,95,.52)    0%, transparent 55%),
+        radial-gradient(ellipse 55% 48% at 88% 62%, rgba(130,88,12,.32)  0%, transparent 52%),
+        radial-gradient(ellipse 100% 40% at 50% 100%, rgba(70,45,5,.72)  0%, transparent 50%),
+        linear-gradient(180deg, #02060e 0%, #05101f 28%, #0a1830 52%, #191000 75%, #281600 100%);
+    }
+    .daniel-card .book-cover::after {
+      background: radial-gradient(circle,
+        rgba(255,215,45,.42) 0%,
+        rgba(184,134,11,.18) 42%,
+        transparent 72%);
+      box-shadow:
+        0 0 32px 16px rgba(184,134,11,.12),
+        0 0 58px 30px rgba(100,68,0,.07);
+    }
+    .daniel-card .book-cover-roman { color: rgba(255,215,60,.86); text-shadow: 0 0 22px rgba(184,134,11,.55); }
+    .daniel-card .book-cover-rule  { background: rgba(184,134,11,.42); }
+    .daniel-card .book-cover-title { color: rgba(240,222,190,.87); text-shadow: 0 2px 14px rgba(0,0,0,.75), 0 0 28px rgba(184,134,11,.42); }
+
+    /* ── Card body (text content) ── */
+    .book-card-body {
+      padding: 1.25rem 1.75rem 1.5rem;
+      background: var(--bg-card);
+      border-top: 1px solid rgba(184,134,11,.22);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+    }
+    .book-card-body p {
+      font-size: .88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+    .book-card-body .book-meta { margin-top: auto; }
+    .revelation-card .book-card-body { border-top-color: rgba(180,30,60,.18); }
+
     /* ══════════════════════════════════════════
        VIDEO LIBRARY SECTION
     ══════════════════════════════════════════ */
@@ -309,8 +646,8 @@
     <a class="nav-brand" href="index.html">Re<span>veal</span>ed</a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="revelation.html">Revelation</a></li>
       <li><a href="daniel.html">Daniel</a></li>
+      <li><a href="revelation.html">Revelation</a></li>
     </ul>
   </nav>
 
@@ -319,33 +656,57 @@
     <h1>Understanding the<br>Prophetic Books</h1>
     <p>An in-depth study of the Books of Daniel and Revelation — two prophetic scriptures that reveal God's plan for humanity from beginning to end.</p>
     <div class="hero-divider"></div>
+    <div class="hero-cta">
+      <a class="hero-cta-btn primary" href="daniel.html">Begin: The Book of Daniel</a>
+      <a class="hero-cta-btn secondary" href="revelation.html">Begin: The Book of Revelation</a>
+    </div>
   </section>
 
   <section class="books-section">
-    <h2 class="section-title">Available Studies</h2>
+    <div class="books-inner">
+
+    <div class="books-showcase-head">
+      <p class="books-showcase-eyebrow">Study Collection</p>
+      <h2>Choose Your Study</h2>
+      <div class="books-showcase-rule"><div class="books-diamond"></div></div>
+    </div>
+
     <div class="books-grid">
 
-      <a class="book-card" href="revelation.html">
-        <p class="book-number">Prophetic Book I</p>
-        <h2>The Book of Revelation</h2>
-        <p>The Revelation of Jesus Christ — a vision given to John on the isle of Patmos, unveiling the final events of earth's history and the glorious return of Christ.</p>
-        <div class="book-meta">
-          <span class="tag available">Available</span>
-          <span>22 Chapters &middot; Slides</span>
+      <a class="book-card daniel-card" href="daniel.html">
+        <div class="book-cover">
+          <span class="book-cover-eyebrow">Prophetic Book</span>
+          <span class="book-cover-roman">I</span>
+          <div class="book-cover-rule"></div>
+          <span class="book-cover-title">The Book of<br>Daniel</span>
+        </div>
+        <div class="book-card-body">
+          <p>Visions spanning empires and centuries, pointing to the Messiah and God's eternal kingdom.</p>
+          <div class="book-meta">
+            <span class="tag available">Available</span>
+            <span>18 Parts &middot; Slides</span>
+          </div>
         </div>
       </a>
 
-      <a class="book-card" href="daniel.html">
-        <p class="book-number">Prophetic Book II</p>
-        <h2>The Book of Daniel</h2>
-        <p>A prophet's visions spanning empires and centuries, pointing to the Messiah and the ultimate establishment of God's eternal kingdom.</p>
-        <div class="book-meta">
-          <span class="tag available">Available</span>
-          <span>18 Study Parts &middot; Slides</span>
+      <a class="book-card revelation-card" href="revelation.html">
+        <div class="book-cover">
+          <span class="book-cover-eyebrow">Prophetic Book</span>
+          <span class="book-cover-roman">II</span>
+          <div class="book-cover-rule"></div>
+          <span class="book-cover-title">The Book of<br>Revelation</span>
+        </div>
+        <div class="book-card-body">
+          <p>Christ's vision to John on Patmos — the final events of earth's history and His glorious return.</p>
+          <div class="book-meta">
+            <span class="tag available">Available</span>
+            <span>22 Chapters &middot; Slides</span>
+          </div>
         </div>
       </a>
 
     </div>
+    </div><!-- /books-inner -->
   </section>
 
   <!-- ══════════════════════════════════════════
@@ -355,6 +716,7 @@
 
     <div class="videos-section-head">
       <div>
+        <p class="videos-eyebrow">Study Resources</p>
         <h2>Video Library</h2>
         <p>Complementary prophetic study videos &mdash; add any YouTube video to grow the library</p>
       </div>
